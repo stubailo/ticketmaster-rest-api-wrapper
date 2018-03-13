@@ -34,6 +34,8 @@ app.post(
   })
 );
 
+const gql = String.raw;
+
 app.get(
   "/graphiql",
   graphiqlExpress({
