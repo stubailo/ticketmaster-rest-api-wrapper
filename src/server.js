@@ -1,29 +1,65 @@
-import express from "express";
-import { graphqlExpress, graphiqlExpress } from "apollo-server-express";
-import bodyParser from "body-parser";
+const express = require("express");
+const { graphqlExpress, graphiqlExpress } = require("apollo-server-express");
+const bodyParser = require("body-parser");
+const { ApolloEngine } = require("apollo-engine");
 
-import { schema } from "./schema";
+const { schema } = require("./schema");
 
-const server = express();
+const app = express();
 
-server.post("*", bodyParser.json(), graphqlExpress({
-  schema,
-  tracing: true,
-  cacheControl: true,
-  context: {
-    secrets: {
-      TM_API_KEY: process.env.TM_API_KEY
+if (!process.env.TM_API_KEY) {
+  throw new Error(
+    "Please provide an API key for Ticketmaster in the environment variable TM_API_KEY."
+  );
+}
+
+if (!process.env.ENGINE_API_KEY) {
+  throw new Error(
+    "Please provide an API key for Apollo Engine in the environment variable ENGINE_API_KEY."
+  );
+}
+
+app.post(
+  "/graphql",
+  bodyParser.json(),
+  graphqlExpress({
+    schema,
+    tracing: true,
+    cacheControl: true,
+    context: {
+      secrets: {
+        TM_API_KEY: process.env.TM_API_KEY
+      }
     }
-  }
-}));
+  })
+);
 
-server.get("*", graphiqlExpress({ endpointURL: process.env.UP_STAGE }));
+app.get("/graphiql", graphiqlExpress({ endpointURL: "/graphql" }));
 
 const PORT = process.env.PORT || 3000;
-server.listen(PORT, () => {
-  console.log(`GraphQL Server is now running on http://localhost:${PORT}`);
+
+const engine = new ApolloEngine({
+  apiKey: process.env.ENGINE_API_KEY,
+  stores: [
+    {
+      name: "publicResponseCache",
+      inMemory: {
+        cacheSize: 10485760
+      }
+    }
+  ],
+  queryCache: {
+    publicFullQueryStore: "publicResponseCache"
+  }
 });
 
-
-
-
+// Start the app
+engine.listen(
+  {
+    port: PORT,
+    expressApp: app
+  },
+  () => {
+    console.log(`Go to http://localhost:${PORT}/graphiql to run queries!`);
+  }
+);

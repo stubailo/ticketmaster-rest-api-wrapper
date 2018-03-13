@@ -1,8 +1,6 @@
-import {
-  makeExecutableSchema,
-} from 'graphql-tools';
+const { makeExecutableSchema } = require('graphql-tools');
 
-import fetch from 'node-fetch';
+const fetch = require('node-fetch');
 
 // Construct a schema, using GraphQL schema language
 const typeDefs = `
@@ -10,7 +8,7 @@ const typeDefs = `
     myFavoriteArtists: [Artist]
   }
 
-  type Artist {
+  type Artist @cacheControl(maxAge: 60) {
 		id: ID
     name: String
     image: String
@@ -18,7 +16,7 @@ const typeDefs = `
     events: [Event]
   }
 
-  type Event {
+  type Event @cacheControl(maxAge: 60) {
     name: String
     image: String
     startDateTime: String
@@ -59,7 +57,7 @@ const resolvers = {
 }
 
 // Required: Export the GraphQL.js schema object as "schema"
-export const schema = makeExecutableSchema({
+const schema = makeExecutableSchema({
   typeDefs,
   resolvers,
 });
@@ -78,3 +76,5 @@ const myFavoriteArtists = [
     id: 'K8vZ9171CVV',
   },
 ];
+
+module.exports = { schema };
