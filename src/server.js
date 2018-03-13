@@ -34,7 +34,24 @@ app.post(
   })
 );
 
-app.get("/graphiql", graphiqlExpress({ endpointURL: "/graphql" }));
+app.get(
+  "/graphiql",
+  graphiqlExpress({
+    endpointURL: "/graphql",
+    query: gql`
+      query UpcomingEvents {
+        myFavoriteArtists {
+          name
+          twitterUrl
+          events {
+            name
+            startDateTime
+          }
+        }
+      }
+    `
+  })
+);
 
 app.use(express.static("public"));
 
