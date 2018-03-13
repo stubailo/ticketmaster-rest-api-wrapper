@@ -25,27 +25,6 @@ const typeDefs = `
   }
 `;
 
-// With cache control
-// const typeDefs = `
-//   type Query {
-//     myFavoriteArtists: [Artist]
-//   }
-
-//   type Artist @cacheControl(maxAge: 10) {
-// 		id: ID
-//     name: String
-//     image: String
-//     twitterUrl: String
-//     events: [Event]
-//   }
-
-//   type Event @cacheControl(maxAge: 10) {
-//     name: String
-//     image: String
-//     startDateTime: String
-//   }
-// `;
-
 const resolvers = {
   Query: {
     myFavoriteArtists: (root, args, context) => {
