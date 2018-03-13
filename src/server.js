@@ -36,6 +36,8 @@ app.post(
 
 app.get("/graphiql", graphiqlExpress({ endpointURL: "/graphql" }));
 
+app.use(express.static("public"));
+
 const PORT = process.env.PORT || 3000;
 
 const engine = new ApolloEngine({
