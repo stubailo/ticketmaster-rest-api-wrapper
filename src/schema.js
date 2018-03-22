@@ -7,7 +7,7 @@ const gql = String.raw;
 // Construct a schema, using GraphQL schema language
 const typeDefs = gql`
   type Query {
-    myFavoriteArtists: [Artist]
+    coolArtists: [Artist]
   }
 
   type Artist @cacheControl(maxAge: 60) {
@@ -27,9 +27,9 @@ const typeDefs = gql`
 
 const resolvers = {
   Query: {
-    myFavoriteArtists: (root, args, context) => {
+    coolArtists: (root, args, context) => {
       return Promise.all(
-        myFavoriteArtists.map(({ name, id }) => {
+        coolArtists.map(({ name, id }) => {
           return fetch(
             `https://app.ticketmaster.com/discovery/v2/attractions/${id}.json?apikey=${
               context.secrets.TM_API_KEY
@@ -73,18 +73,18 @@ const schema = makeExecutableSchema({
   resolvers
 });
 
-const myFavoriteArtists = [
+const coolArtists = [
+  {
+    name: "Justin Timberlake",
+    id: "K8vZ91754g7"
+  },
+  {
+    name: "Beyoncé",
+    id: "K8vZ9175rX7"
+  },
   {
     name: "Kansas",
     id: "K8vZ9171C-f"
-  },
-  {
-    name: "Lil Yachty",
-    id: "K8vZ9174v57"
-  },
-  {
-    name: "Jason Mraz",
-    id: "K8vZ9171CVV"
   }
 ];
 

@@ -42,7 +42,7 @@ app.get(
     endpointURL: "/graphql",
     query: gql`
       query UpcomingEvents {
-        myFavoriteArtists {
+        coolArtists {
           name
           twitterUrl
           events {
@@ -60,18 +60,7 @@ app.use(express.static("public"));
 const PORT = process.env.PORT || 3000;
 
 const engine = new ApolloEngine({
-  apiKey: process.env.ENGINE_API_KEY,
-  stores: [
-    {
-      name: "publicResponseCache",
-      inMemory: {
-        cacheSize: 10485760
-      }
-    }
-  ],
-  queryCache: {
-    publicFullQueryStore: "publicResponseCache"
-  }
+  apiKey: process.env.ENGINE_API_KEY
 });
 
 // Start the app
